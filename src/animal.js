@@ -17,6 +17,7 @@
 //trace_listが変化していないので、探索が2回目以降行われていない(search)
 //explore_listへの追加がうまく行われていない、追跡が継続できない
 //npm start の状態で起動してからlaunch.jsonの状態で起動
+//一個前の自分の座標をtrace.list（すでに行った場所の記録）に入れて、反復運動をしないようにしたい。animalclassのコンストラクター、this.animalpastlocationより。
 
 
 import Phaser from "phaser";
@@ -115,6 +116,7 @@ class Animal {
     this.failcounty = 0;
     this.position = undefined;
     this.animalspeed = 1;
+    //this.animalpastlocation = (0,0);
   }
   checkOverlap(x, y, layer) {
     var tile = layer.tilemap.getTileAtWorldXY(x + 8, y + 8);
@@ -371,6 +373,7 @@ class Animal {
           trace_list.push(p)
           route_list = th.RouteRecord(trace_list)
           this.numberreset();
+          //this.animalpastlocation =  (this.a)
           return [route_list, trace_list];
           //return [route_list, trace_list];
         }

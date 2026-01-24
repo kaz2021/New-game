@@ -391,8 +391,8 @@ export class MyGame extends Phaser.Scene {
       1000 * 300,
       this
     );
-    this.velocityX = 0;
-    this.velocityY = 0;
+    this.velocityX = 200;
+    this.velocityY = 200;
     this.enemymoving = true;
     this.cursorsfake = false;
     //this.add.image(0,0,"terrian");

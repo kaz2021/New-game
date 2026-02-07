@@ -400,7 +400,6 @@ export class MyGame extends Phaser.Scene {
   };
 
   update() {
-
     this.player.x = Phaser.Math.Clamp(this.player.x, 0, 2048);
     this.player.y = Phaser.Math.Clamp(this.player.y, 0, 1280);
     this.player.currentlocationx = Math.floor(this.player.x / SQUARE_SIZE);
@@ -460,7 +459,11 @@ export class MyGame extends Phaser.Scene {
       //var searchstart = this.enemy.search(this.player.x,this.player.y);
       var mx = Math.floor(this.player.x / SQUARE_SIZE);
       var my = Math.floor(this.player.y / SQUARE_SIZE);
-      var searchresult = this.enemy.search(mx, my);
+      if(this.enemy.pastlocationx == 0 && this.enemy.pastlocationy == 0){
+        this.enemy.pastlocationx = Math.floor(this.enemy.animal.x/SQUARE_SIZE);
+        this.enemy.pastlocationy = Math.floor(this.enemy.animal.y/SQUARE_SIZE);
+      }
+      var searchresult = this.enemy.search(mx, my, this.enemy.pastlocationx, this.enemy.pastlocationy);
       //mapdata_array[mx][my] = 1;
       this.position = this.enemy.position = searchresult;
       //mapdata_array[mx][my] = 0;
@@ -517,6 +520,9 @@ export class MyGame extends Phaser.Scene {
       isstart = false;
       this.scene.start("MyGame2", passingdata);
     }
+
+    this.enemy.pastlocationx = Math.floor(this.enemy.animal.x/SQUARE_SIZE);
+    this.enemy.pastlocationy = Math.floor(this.enemy.animal.y/SQUARE_SIZE);
   };
 
   eatCherries(player, cherry) {

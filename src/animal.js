@@ -116,6 +116,8 @@ class Animal {
     this.failcounty = 0;
     this.position = undefined;
     this.animalspeed = 1;
+    this.pastlocationx = 0;
+    this.pastlocationy = 0;
     //this.animalpastlocation = (0,0);
   }
   checkOverlap(x, y, layer) {
@@ -250,10 +252,9 @@ class Animal {
     {
       this.movingup(layers);
     }
-
-
     this.animal.setCollideWorldBounds(false);
   }
+  
   RouteRecord(trace_list) {
     var num_trace = trace_list.length;
     var n = num_trace - 1;
@@ -299,7 +300,7 @@ class Animal {
     }
   }
 
-  search(x, y) {
+  search(x, y, pastlocationx, pastlocationy) {
     var ax = Math.floor(this.animal.x / SQUARE_SIZE);
     var ay = Math.floor(this.animal.y / SQUARE_SIZE);
     var explore_list = [new position(x, y, ax, ay, 0, 0, 0)];
@@ -348,6 +349,11 @@ class Animal {
           continue;
         }
 
+        //直前にいた場所との比較
+        else if (p.animal_x == pastlocationx && p.animal_y == pastlocationy){
+          continue;
+        }
+
         ///すでに通った位置との比較
         else if (mapdata_array[p.animal_y][p.animal_x] == 2) {
           index = 0;
@@ -371,7 +377,7 @@ class Animal {
         else if (mapdata_array[p.animal_y][p.animal_x] == 1) {
           console.log("Find goal & Record it")
           trace_list.push(p)
-          route_list = th.RouteRecord(trace_list)
+          route_list = th.RouteRecord(trace_list);
           this.numberreset();
           //this.animalpastlocation =  (this.a)
           return [route_list, trace_list];

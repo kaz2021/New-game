@@ -29,6 +29,8 @@ const {
   SQUARE_SIZE
 } = globals;
 
+const ENABLE_REDCIRCLE = false;
+
 var isstart = true;
 
 export class MyGame extends Phaser.Scene {
@@ -198,15 +200,17 @@ export class MyGame extends Phaser.Scene {
       child.play("cherry");
     });
     this.redcircleobject = new Array();
-    redcircletimer.timer = setInterval(
-      function (th) {
-        var redcirclex = Math.floor(Math.random() * 400) - 200;
-        var redcircley = Math.floor(Math.random() * 400) - 200;
-        th.redcircleobject.push(th.physics.add.sprite(th.player.x + redcirclex, th.player.y + redcircley, "redcircle"));
-      },
-      1000 * 5,
-      this
-    );
+    if (ENABLE_REDCIRCLE){
+      redcircletimer.timer = setInterval(
+        function (th) {
+          var redcirclex = Math.floor(Math.random() * 400) - 200;
+          var redcircley = Math.floor(Math.random() * 400) - 200;
+          th.redcircleobject.push(th.physics.add.sprite(th.player.x + redcirclex, th.player.y + redcircley, "redcircle"));
+        },
+        1000 * 5,
+        this
+      );
+    }
 
     this.player = this.physics.add.sprite(1160, 840, "player-run");
     this.player.setCollideWorldBounds(false);
@@ -459,9 +463,9 @@ export class MyGame extends Phaser.Scene {
       //var searchstart = this.enemy.search(this.player.x,this.player.y);
       var mx = Math.floor(this.player.x / SQUARE_SIZE);
       var my = Math.floor(this.player.y / SQUARE_SIZE);
-      if(this.enemy.pastlocationx == 0 && this.enemy.pastlocationy == 0){
-        this.enemy.pastlocationx = Math.floor(this.enemy.animal.x/SQUARE_SIZE);
-        this.enemy.pastlocationy = Math.floor(this.enemy.animal.y/SQUARE_SIZE);
+      if (this.enemy.pastlocationx == 0 && this.enemy.pastlocationy == 0) {
+        this.enemy.pastlocationx = Math.floor(this.enemy.animal.x / SQUARE_SIZE);
+        this.enemy.pastlocationy = Math.floor(this.enemy.animal.y / SQUARE_SIZE);
       }
       var searchresult = this.enemy.search(mx, my, this.enemy.pastlocationx, this.enemy.pastlocationy);
       //mapdata_array[mx][my] = 1;
@@ -521,8 +525,8 @@ export class MyGame extends Phaser.Scene {
       this.scene.start("MyGame2", passingdata);
     }
 
-    this.enemy.pastlocationx = Math.floor(this.enemy.animal.x/SQUARE_SIZE);
-    this.enemy.pastlocationy = Math.floor(this.enemy.animal.y/SQUARE_SIZE);
+    this.enemy.pastlocationx = Math.floor(this.enemy.animal.x / SQUARE_SIZE);
+    this.enemy.pastlocationy = Math.floor(this.enemy.animal.y / SQUARE_SIZE);
   };
 
   eatCherries(player, cherry) {

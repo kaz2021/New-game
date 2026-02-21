@@ -3,7 +3,8 @@ import redcircle from "./assets/Enemies/redcircle.jpg";
 
 //checkOverlap
 function checkOverlap(x, y, layer) {
-  var tile = layer.tilemap.getTileAtWorldXY(x + 8, y + 8);
+  var tile = layer.tilemap.getTileAtWorldXY(x, y);
+  //元は(x+8,y+8)
   return tile !== null;
 }
 

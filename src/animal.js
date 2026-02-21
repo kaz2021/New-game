@@ -19,6 +19,10 @@
 //npm start の状態で起動してからlaunch.jsonの状態で起動
 //一個前の自分の座標をtrace.list（すでに行った場所の記録）に入れて、反復運動をしないようにしたい。animalclassのコンストラクター、this.animalpastlocationより。
 
+//障害物を認識できていない可能性がある。checkoverlapを緩めてみると変わるかも。
+//failcountを行う機能が余計。
+//route_list（最終的に行く道）の中に、障害物を通るルートが含まれている。
+
 
 import Phaser from "phaser";
 import globals from "./global.js";
@@ -239,18 +243,31 @@ class Animal {
     var animal_y = route_list[route_list.length - 1].animal_y;
     var currentanimal_x = Math.floor(this.animal.x / SQUARE_SIZE);
     var currentanimal_y = Math.floor(this.animal.y / SQUARE_SIZE);
-    if (currentanimal_x < animal_x) {
-      this.movingright(layers);
+    if (currentanimal_x == animal_x && currentanimal_y == animal_y){ 
     }
-    else if (currentanimal_x > animal_x) {
-      this.movingleft(layers);
-    }
-    else if (currentanimal_y < animal_y) {
+    else if (currentanimal_x == animal_x && currentanimal_y < animal_y) {
       this.movingdown(layers);
     }
-    else //(currentanimal_y > animal_y) {
-    {
+    else if (currentanimal_x == animal_x && currentanimal_y > animal_y) {
       this.movingup(layers);
+    }
+    else if (currentanimal_x < animal_x && currentanimal_y == animal_y) {
+      this.movingright(layers);
+    }
+    else if (currentanimal_x > animal_x && currentanimal_y == animal_y) {
+      this.movingleft(layers);
+    }
+    else if (currentanimal_x > animal_x && currentanimal_y > animal_y) {
+      this.movingleft(layers);
+    }
+    else if (currentanimal_x > animal_x && currentanimal_y < animal_y) {
+      this.movingleft(layers);
+    }
+    else if (currentanimal_x < animal_x && currentanimal_y > animal_y) {
+      this.movingright(layers);
+    }
+    else if (currentanimal_x < animal_x && currentanimal_y < animal_y) {
+      this.movingright(layers);
     }
     this.animal.setCollideWorldBounds(false);
   }

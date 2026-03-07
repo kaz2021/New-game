@@ -23,6 +23,9 @@
 //failcountを行う機能が余計。
 //route_list（最終的に行く道）の中に、障害物を通るルートが含まれている。
 
+//mapdataの配列を見直す　or　checkoverlapの障害物判定方法を追跡ルーチンの判定方法に適用する
+//gamemap.jsonとmapdata.arrayの障害物の情報が噛み合っていない
+
 
 import Phaser from "phaser";
 import globals from "./global.js";
@@ -125,7 +128,7 @@ class Animal {
     //this.animalpastlocation = (0,0);
   }
   checkOverlap(x, y, layer) {
-    var tile = layer.tilemap.getTileAtWorldXY(x + 8, y + 8);
+    var tile = layer.tilemap.getTileAtWorldXY(x, y);
     return tile !== null;
   }
 
@@ -183,54 +186,28 @@ class Animal {
   }
 
   movingleft(layers) {
-    if (this.checkOverlap(this.animal.x - 24, this.animal.y, layers)) {
-      this.failcountx = this.failcountx + 1;
-      if (this.failcountx >= 50) {
-        this.movingdown(layers);
-      }
-    } else {
+    if (!this.checkOverlap(this.animal.x, this.animal.y, layers)) {
       this.animal.x = this.animal.x - this.animalspeed;
       sleep(100);
-      this.failcountx = 0;
     }
   }
   movingright(layers) {
-    if (this.checkOverlap(this.animal.x + 24, this.animal.y, layers)) {
-      this.failcountx = this.failcountx + 1;
-      if (this.failcountx >= 50) {
-        this.movingup(layers);
-      }
-    } else {
+    if (!this.checkOverlap(this.animal.x + 16, this.animal.y, layers)) {
       this.animal.x = this.animal.x + this.animalspeed;
       sleep(100);
-      this.failcountx = 0;
     }
   }
   movingup(layers) {
-    if (this.checkOverlap(this.animal.x, this.animal.y - 24, layers)) {
-      this.failcounty = this.failcounty + 1;
-      if (this.failcounty >= 50) {
-        this.movingleft(layers);
-      }
-    } else {
-
+    if (!this.checkOverlap(this.animal.x, this.animal.y, layers)) {
       this.animal.y = this.animal.y - this.animalspeed;
       sleep(100);
-      this.failcounty = 0;
     }
   }
 
   movingdown(layers) {
-    if (this.checkOverlap(this.animal.x, this.animal.y + 24, layers)) {
-      this.failcounty = this.failcounty + 1;
-      if (this.failcounty >= 1) {
-        this.movingright(layers);
-      }
-    } else {
-      //sleep(1000);
+    if (!this.checkOverlap(this.animal.x, this.animal.y + 16, layers)) {
       this.animal.y = this.animal.y + this.animalspeed;
       sleep(100);
-      this.failcounty = 0;
     }
   }
 

@@ -26,6 +26,9 @@
 //mapdataの配列を見直す　or　checkoverlapの障害物判定方法を追跡ルーチンの判定方法に適用する
 //gamemap.jsonとmapdata.arrayの障害物の情報が噛み合っていない
 
+//実際とは違う障害物が生成されている。初期化の際の100の入れ方が違う。
+//→背景データは修復、ただしまだ追ってくるプログラムに問題あり
+
 
 import Phaser from "phaser";
 import globals from "./global.js";

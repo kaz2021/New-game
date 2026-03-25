@@ -84,7 +84,7 @@ export class MyGame extends Phaser.Scene {
     for (let i = 0; i < mapHeight; i++) {
       mapdata_array[i] = new Array(mapWidth);
       for (let j = 0; j < mapWidth; j++) {
-        if (mapdata[i + j * mapWidth] == 0) {
+        if (mapdata[j + i * mapWidth] == 0) {
           mapdata_array[i][j] = 0;
         } else {
           mapdata_array[i][j] = 100;
@@ -410,6 +410,8 @@ export class MyGame extends Phaser.Scene {
     this.player.currentlocationy = Math.floor(this.player.y / SQUARE_SIZE);
     this.enemy.currentlocationx = Math.floor(this.enemy.animal.x / SQUARE_SIZE);
     this.enemy.currentlocationy = Math.floor(this.enemy.animal.y / SQUARE_SIZE);
+    var myplaceinfo = mapdata_array[this.player.currentlocationy][this.player.currentlocationx];
+    var enemyplaceinfo = mapdata_array[this.enemy.currentlocationy][this.enemy.currentlocationx];
     mapdata_array[this.player.currentlocationy][this.player.currentlocationx] = 1;
     mapdata_array[this.enemy.currentlocationy][this.enemy.currentlocationx] = -1;
 
@@ -470,7 +472,7 @@ export class MyGame extends Phaser.Scene {
       var searchresult = this.enemy.search(mx, my, this.enemy.pastlocationx, this.enemy.pastlocationy);
       //mapdata_array[mx][my] = 1;
       this.position = this.enemy.position = searchresult;
-      //mapdata_array[mx][my] = 0;
+      //[mx][my] = 0;
       this.enemy.move(this.player, this.objectlayer);
     }
     if (redcircleobject !== null) {
@@ -527,6 +529,8 @@ export class MyGame extends Phaser.Scene {
 
     this.enemy.pastlocationx = Math.floor(this.enemy.animal.x / SQUARE_SIZE);
     this.enemy.pastlocationy = Math.floor(this.enemy.animal.y / SQUARE_SIZE);
+    mapdata_array[this.player.currentlocationy][this.player.currentlocationx] = myplaceinfo;
+    mapdata_array[this.enemy.currentlocationy][this.enemy.currentlocationx] = enemyplaceinfo;
   };
 
   eatCherries(player, cherry) {

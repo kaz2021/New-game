@@ -29,6 +29,12 @@
 //実際とは違う障害物が生成されている。初期化の際の100の入れ方が違う。
 //→背景データは修復、ただしまだ追ってくるプログラムに問題あり
 
+//parent_x、parent_yで比較してroute_listを作成している意図がわからない。
+//route_listに繰り返し同じ情報が入っているのを治したい
+//route_listでは短期的なゴールとスタートが入れ替わりながら進んでいる。ゴールの手前となる場所が見つからないため、繰り返しが生まれている。最後の情報が正しく入っていないため、ループが完結していない。
+//231行目に入っている
+//相手が追いかけてこない時、route_listが空っぽの状態でsearchを返している。trace_listの情報が正しく積み上がっていないのが原因かもしれない。
+//どういうルートを辿ろうとしているのか、視覚化したい
 
 import Phaser from "phaser";
 import globals from "./global.js";
@@ -189,26 +195,34 @@ class Animal {
   }
 
   movingleft(layers) {
-    if (!this.checkOverlap(this.animal.x, this.animal.y, layers)) {
+    var leftcheck = this.checkOverlap(this.animal.x, this.animal.y, layers);
+    console.log("l" + leftcheck);
+    if (!leftcheck) {
       this.animal.x = this.animal.x - this.animalspeed;
       sleep(100);
     }
   }
   movingright(layers) {
-    if (!this.checkOverlap(this.animal.x + 16, this.animal.y, layers)) {
+    var rightcheck = this.checkOverlap(this.animal.x + 16, this.animal.y, layers);
+    console.log("r" + rightcheck);
+    if (!rightcheck) {
       this.animal.x = this.animal.x + this.animalspeed;
       sleep(100);
     }
   }
   movingup(layers) {
-    if (!this.checkOverlap(this.animal.x, this.animal.y, layers)) {
+    var upcheck = this.checkOverlap(this.animal.x, this.animal.y, layers);
+    console.log("u" + upcheck);
+    if (!upcheck) {
       this.animal.y = this.animal.y - this.animalspeed;
       sleep(100);
     }
   }
 
   movingdown(layers) {
-    if (!this.checkOverlap(this.animal.x, this.animal.y + 16, layers)) {
+  var downcheck = this.checkOverlap(this.animal.x, this.animal.y + 16, layers);
+  console.log("d" + downcheck);
+    if (!downcheck) {
       this.animal.y = this.animal.y + this.animalspeed;
       sleep(100);
     }
@@ -216,6 +230,7 @@ class Animal {
 
   move(player, layers) {
     if (this.position[0].length <= 0) {
+      console.log("error");
       return;
     }
     var route_list = this.position[0];
@@ -223,32 +238,42 @@ class Animal {
     var animal_y = route_list[route_list.length - 1].animal_y;
     var currentanimal_x = Math.floor(this.animal.x / SQUARE_SIZE);
     var currentanimal_y = Math.floor(this.animal.y / SQUARE_SIZE);
+    var currentdirection = null;
     if (currentanimal_x == animal_x && currentanimal_y == animal_y){ 
     }
     else if (currentanimal_x == animal_x && currentanimal_y < animal_y) {
       this.movingdown(layers);
+      var currentdirection = "down";
     }
     else if (currentanimal_x == animal_x && currentanimal_y > animal_y) {
       this.movingup(layers);
+      var currentdirection = "up";
     }
     else if (currentanimal_x < animal_x && currentanimal_y == animal_y) {
       this.movingright(layers);
+      var currentdirection = "right";
     }
     else if (currentanimal_x > animal_x && currentanimal_y == animal_y) {
       this.movingleft(layers);
+      var currentdirection = "left";
     }
     else if (currentanimal_x > animal_x && currentanimal_y > animal_y) {
       this.movingleft(layers);
+      var currentdirection = "left";
     }
     else if (currentanimal_x > animal_x && currentanimal_y < animal_y) {
       this.movingleft(layers);
+      var currentdirection = "left";
     }
     else if (currentanimal_x < animal_x && currentanimal_y > animal_y) {
       this.movingright(layers);
+      var currentdirection = "right";
     }
     else if (currentanimal_x < animal_x && currentanimal_y < animal_y) {
       this.movingright(layers);
+      var currentdirection = "right";
     }
+    console.log(currentdirection);
     this.animal.setCollideWorldBounds(false);
   }
   
@@ -262,6 +287,7 @@ class Animal {
       route_list.push(child);
       if (cnt > trace_list.length) {
         return route_list;
+        //こちらにはあまりきてほしくない
       }
       else {
         cnt = cnt + 1

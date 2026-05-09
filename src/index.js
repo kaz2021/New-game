@@ -401,6 +401,8 @@ export class MyGame extends Phaser.Scene {
     this.cursorsfake = false;
     //this.add.image(0,0,"terrian");
     this.gameOvertextadd = false;
+    this.pastlocationx = 0;
+    this.pastlocationy = 0;
   };
 
   update() {
@@ -465,13 +467,15 @@ export class MyGame extends Phaser.Scene {
       //var searchstart = this.enemy.search(this.player.x,this.player.y);
       var mx = Math.floor(this.player.x / SQUARE_SIZE);
       var my = Math.floor(this.player.y / SQUARE_SIZE);
-      if (this.enemy.pastlocationx == 0 && this.enemy.pastlocationy == 0) {
-        this.enemy.pastlocationx = Math.floor(this.enemy.animal.x / SQUARE_SIZE);
-        this.enemy.pastlocationy = Math.floor(this.enemy.animal.y / SQUARE_SIZE);
+      if (this.enemy.pastlocationax == 0 && this.enemy.pastlocationy == 0) {
+        this.enemy.pastlocationax = Math.floor(this.enemy.animal.x / SQUARE_SIZE);
+        this.enemy.pastlocationay = Math.floor(this.enemy.animal.y / SQUARE_SIZE);
       }
-      var searchresult = this.enemy.search(mx, my, this.enemy.pastlocationx, this.enemy.pastlocationy);
-      //mapdata_array[mx][my] = 1;
-      this.position = this.enemy.position = searchresult;
+      if(!(this.pastlocationx == Math.floor(this.player.x/SQUARE_SIZE) && this.pastlocationy == Math.floor(this.player.y/SQUARE_SIZE))){
+        var searchresult = this.enemy.search(mx, my, this.enemy.pastlocationax, this.enemy.pastlocationay);
+        //mapdata_array[mx][my] = 1;
+        this.position = this.enemy.position = searchresult;
+      }
       //[mx][my] = 0;
       this.enemy.move(this.player, this.objectlayer);
     }
@@ -527,10 +531,12 @@ export class MyGame extends Phaser.Scene {
       this.scene.start("MyGame2", passingdata);
     }
 
-    this.enemy.pastlocationx = Math.floor(this.enemy.animal.x / SQUARE_SIZE);
-    this.enemy.pastlocationy = Math.floor(this.enemy.animal.y / SQUARE_SIZE);
+    this.enemy.pastlocationax = Math.floor(this.enemy.animal.x / SQUARE_SIZE);
+    this.enemy.pastlocationay = Math.floor(this.enemy.animal.y / SQUARE_SIZE);
     mapdata_array[this.player.currentlocationy][this.player.currentlocationx] = myplaceinfo;
     mapdata_array[this.enemy.currentlocationy][this.enemy.currentlocationx] = enemyplaceinfo;
+    this.pastlocationx = Math.floor(this.player.x/SQUARE_SIZE);
+    this.pastlocationy = Math.floor(this.player.y/SQUARE_SIZE);
   };
 
   eatCherries(player, cherry) {

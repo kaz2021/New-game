@@ -39,6 +39,8 @@
 //searchを発動させるタイミングがゲームに則してない。一回行動を決めても、次のsearchを発動したタイミングで別の結果が出てしまうので、結果として反復運動を繰り返してしまっている。
 //route_list（行き先を最終的に決めるリスト）の最後の部分のみを参照して行動を決定しているので、長期的な判断ができていない。
 //searchのタイミングを考えることが課題。一例：searchをplayerが行動したタイミングで発動するように変え、route_listの全ての部分を使って行動を決めさせる。
+//一旦searchの発動タイミングを変える
+//indexの474行目に変更
 
 import Phaser from "phaser";
 import globals from "./global.js";
@@ -136,8 +138,8 @@ class Animal {
     this.failcounty = 0;
     this.position = undefined;
     this.animalspeed = 1;
-    this.pastlocationx = 0;
-    this.pastlocationy = 0;
+    this.pastlocationax = 0;
+    this.pastlocationay = 0;
     //this.animalpastlocation = (0,0);
   }
   checkOverlap(x, y, layer) {
@@ -333,7 +335,7 @@ class Animal {
     }
   }
 
-  search(x, y, pastlocationx, pastlocationy) {
+  search(x, y, pastlocationax, pastlocationay) {
     var ax = Math.floor(this.animal.x / SQUARE_SIZE);
     var ay = Math.floor(this.animal.y / SQUARE_SIZE);
     var explore_list = [new position(x, y, ax, ay, 0, 0, 0)];
@@ -383,7 +385,7 @@ class Animal {
         }
 
         //直前にいた場所との比較
-        else if (p.animal_x == pastlocationx && p.animal_y == pastlocationy){
+        else if (p.animal_x == pastlocationax && p.animal_y == pastlocationay){
           continue;
         }
 

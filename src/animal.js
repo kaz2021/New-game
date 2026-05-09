@@ -36,6 +36,10 @@
 //相手が追いかけてこない時、route_listが空っぽの状態でsearchを返している。trace_listの情報が正しく積み上がっていないのが原因かもしれない。
 //どういうルートを辿ろうとしているのか、視覚化したい
 
+//searchを発動させるタイミングがゲームに則してない。一回行動を決めても、次のsearchを発動したタイミングで別の結果が出てしまうので、結果として反復運動を繰り返してしまっている。
+//route_list（行き先を最終的に決めるリスト）の最後の部分のみを参照して行動を決定しているので、長期的な判断ができていない。
+//searchのタイミングを考えることが課題。一例：searchをplayerが行動したタイミングで発動するように変え、route_listの全ての部分を使って行動を決めさせる。
+
 import Phaser from "phaser";
 import globals from "./global.js";
 import gameMap from "./assets/gamemap.json";
@@ -284,7 +288,13 @@ class Animal {
     var cnt = 0;
     while (true) {
       var child = trace_list[n];
-      route_list.push(child);
+      var routetail = route_list[route_list.length - 1];
+      if(route_list.length == 0){
+        route_list.push(child);
+      }
+      else if(!(routetail.animal_x == child.animal_x && routetail.animal_y == child.animal_y)){
+        route_list.push(child);
+      }
       if (cnt > trace_list.length) {
         return route_list;
         //こちらにはあまりきてほしくない
@@ -402,6 +412,7 @@ class Animal {
           trace_list.push(p)
           route_list = th.RouteRecord(trace_list);
           this.numberreset();
+          console.table(route_list);
           //this.animalpastlocation =  (this.a)
           return [route_list, trace_list];
           //return [route_list, trace_list];

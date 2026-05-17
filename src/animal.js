@@ -42,6 +42,9 @@
 //一旦searchの発動タイミングを変える
 //indexの474行目に変更
 
+//this.position[0](route_list)ではなく[1]に情報が入ってしまっている時がある
+//route_listの情報を正しく参照したい。今は、一番最初の情報のみで全ての行動を決定してしまっている
+
 import Phaser from "phaser";
 import globals from "./global.js";
 import gameMap from "./assets/gamemap.json";
@@ -202,7 +205,7 @@ class Animal {
 
   movingleft(layers) {
     var leftcheck = this.checkOverlap(this.animal.x, this.animal.y, layers);
-    console.log("l" + leftcheck);
+    //console.log("l" + leftcheck);
     if (!leftcheck) {
       this.animal.x = this.animal.x - this.animalspeed;
       sleep(100);
@@ -210,7 +213,7 @@ class Animal {
   }
   movingright(layers) {
     var rightcheck = this.checkOverlap(this.animal.x + 16, this.animal.y, layers);
-    console.log("r" + rightcheck);
+    //console.log("r" + rightcheck);
     if (!rightcheck) {
       this.animal.x = this.animal.x + this.animalspeed;
       sleep(100);
@@ -218,7 +221,7 @@ class Animal {
   }
   movingup(layers) {
     var upcheck = this.checkOverlap(this.animal.x, this.animal.y, layers);
-    console.log("u" + upcheck);
+    //console.log("u" + upcheck);
     if (!upcheck) {
       this.animal.y = this.animal.y - this.animalspeed;
       sleep(100);
@@ -227,7 +230,7 @@ class Animal {
 
   movingdown(layers) {
   var downcheck = this.checkOverlap(this.animal.x, this.animal.y + 16, layers);
-  console.log("d" + downcheck);
+  //console.log("d" + downcheck);
     if (!downcheck) {
       this.animal.y = this.animal.y + this.animalspeed;
       sleep(100);
@@ -240,12 +243,16 @@ class Animal {
       return;
     }
     var route_list = this.position[0];
-    var animal_x = route_list[route_list.length - 1].animal_x;
-    var animal_y = route_list[route_list.length - 1].animal_y;
-    var currentanimal_x = Math.floor(this.animal.x / SQUARE_SIZE);
-    var currentanimal_y = Math.floor(this.animal.y / SQUARE_SIZE);
+    if(route_list.length <= 2){
+      return;
+    }
+    var animal_x = route_list[route_list.length - 2].animal_x;
+    var animal_y = route_list[route_list.length - 2].animal_y;
+    var currentanimal_x = route_list[route_list.length - 1].animal_x;
+    var currentanimal_y = route_list[route_list.length - 1].animal_y;
     var currentdirection = null;
-    if (currentanimal_x == animal_x && currentanimal_y == animal_y){ 
+    if (currentanimal_x == animal_x && currentanimal_y == animal_y){
+      //console.log("catched");
     }
     else if (currentanimal_x == animal_x && currentanimal_y < animal_y) {
       this.movingdown(layers);
@@ -279,7 +286,11 @@ class Animal {
       this.movingright(layers);
       var currentdirection = "right";
     }
-    console.log(currentdirection);
+    else{
+      console.log("error283");
+    }
+    //console.log(currentdirection);
+    route_list.pop();
     this.animal.setCollideWorldBounds(false);
   }
   
@@ -336,6 +347,7 @@ class Animal {
   }
 
   search(x, y, pastlocationax, pastlocationay) {
+    console.log("search");
     var ax = Math.floor(this.animal.x / SQUARE_SIZE);
     var ay = Math.floor(this.animal.y / SQUARE_SIZE);
     var explore_list = [new position(x, y, ax, ay, 0, 0, 0)];
@@ -410,11 +422,11 @@ class Animal {
 
         //ゴールとの比較
         else if (mapdata_array[p.animal_y][p.animal_x] == 1) {
-          console.log("Find goal & Record it")
+          //console.log("Find goal & Record it")
           trace_list.push(p)
           route_list = th.RouteRecord(trace_list);
           this.numberreset();
-          console.table(route_list);
+          //console.table(route_list);
           //this.animalpastlocation =  (this.a)
           return [route_list, trace_list];
           //return [route_list, trace_list];

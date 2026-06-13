@@ -45,6 +45,11 @@
 //this.position[0](route_list)ではなく[1]に情報が入ってしまっている時がある
 //route_listの情報を正しく参照したい。今は、一番最初の情報のみで全ての行動を決定してしまっている
 
+//障害物の判定について、checkoverlapとroute_listでの基準が大きく異なる（豚がcheckoverlapにかからないようにするとわかる）
+//振動など、時々止まってしまう状態がある
+
+//route_listの衝突判定をcheckoverlapに準拠させる
+
 import Phaser from "phaser";
 import globals from "./global.js";
 import gameMap from "./assets/gamemap.json";
@@ -79,7 +84,7 @@ class position {
     this.g = depth;
     this.h = 0;
     this.f = this.g + this.h;
-    
+
   }
   cal_cost() {
     this.g = this.depth;
@@ -204,37 +209,21 @@ class Animal {
   }
 
   movingleft(layers) {
-    var leftcheck = this.checkOverlap(this.animal.x, this.animal.y, layers);
-    //console.log("l" + leftcheck);
-    if (!leftcheck) {
-      this.animal.x = this.animal.x - this.animalspeed;
-      sleep(100);
-    }
+    this.animal.x = this.animal.x - this.animalspeed;
+    sleep(100);
   }
   movingright(layers) {
-    var rightcheck = this.checkOverlap(this.animal.x + 16, this.animal.y, layers);
-    //console.log("r" + rightcheck);
-    if (!rightcheck) {
-      this.animal.x = this.animal.x + this.animalspeed;
-      sleep(100);
-    }
+    this.animal.x = this.animal.x + this.animalspeed;
+    sleep(100);
   }
   movingup(layers) {
-    var upcheck = this.checkOverlap(this.animal.x, this.animal.y, layers);
-    //console.log("u" + upcheck);
-    if (!upcheck) {
-      this.animal.y = this.animal.y - this.animalspeed;
-      sleep(100);
-    }
+    this.animal.y = this.animal.y - this.animalspeed;
+    sleep(100);
   }
 
   movingdown(layers) {
-  var downcheck = this.checkOverlap(this.animal.x, this.animal.y + 16, layers);
-  //console.log("d" + downcheck);
-    if (!downcheck) {
-      this.animal.y = this.animal.y + this.animalspeed;
-      sleep(100);
-    }
+    this.animal.y = this.animal.y + this.animalspeed;
+    sleep(100);
   }
 
   move(player, layers) {
@@ -243,7 +232,7 @@ class Animal {
       return;
     }
     var route_list = this.position[0];
-    if(route_list.length <= 2){
+    if (route_list.length <= 2) {
       return;
     }
     var animal_x = route_list[route_list.length - 2].animal_x;
@@ -251,7 +240,7 @@ class Animal {
     var currentanimal_x = route_list[route_list.length - 1].animal_x;
     var currentanimal_y = route_list[route_list.length - 1].animal_y;
     var currentdirection = null;
-    if (currentanimal_x == animal_x && currentanimal_y == animal_y){
+    if (currentanimal_x == animal_x && currentanimal_y == animal_y) {
       //console.log("catched");
     }
     else if (currentanimal_x == animal_x && currentanimal_y < animal_y) {
@@ -286,14 +275,14 @@ class Animal {
       this.movingright(layers);
       var currentdirection = "right";
     }
-    else{
+    else {
       console.log("error283");
     }
     //console.log(currentdirection);
     route_list.pop();
     this.animal.setCollideWorldBounds(false);
   }
-  
+
   RouteRecord(trace_list) {
     var num_trace = trace_list.length;
     var n = num_trace - 1;
@@ -302,10 +291,10 @@ class Animal {
     while (true) {
       var child = trace_list[n];
       var routetail = route_list[route_list.length - 1];
-      if(route_list.length == 0){
+      if (route_list.length == 0) {
         route_list.push(child);
       }
-      else if(!(routetail.animal_x == child.animal_x && routetail.animal_y == child.animal_y)){
+      else if (!(routetail.animal_x == child.animal_x && routetail.animal_y == child.animal_y)) {
         route_list.push(child);
       }
       if (cnt > trace_list.length) {
@@ -334,7 +323,7 @@ class Animal {
     return route_list;
   }
 
-  numberreset(){
+  numberreset() {
     let mapWidth = gameMap.layers[2].width;
     let mapHeight = gameMap.layers[2].height;
     for (let i = 0; i < mapWidth; i++) {
@@ -397,7 +386,7 @@ class Animal {
         }
 
         //直前にいた場所との比較
-        else if (p.animal_x == pastlocationax && p.animal_y == pastlocationay){
+        else if (p.animal_x == pastlocationax && p.animal_y == pastlocationay) {
           continue;
         }
 

@@ -401,8 +401,8 @@ export class MyGame extends Phaser.Scene {
     this.cursorsfake = false;
     //this.add.image(0,0,"terrian");
     this.gameOvertextadd = false;
-    this.pastlocationx = 0;
-    this.pastlocationy = 0;
+    this.pastlocationx = -100;
+    this.pastlocationy = -100;
   };
 
   update() {
@@ -471,7 +471,7 @@ export class MyGame extends Phaser.Scene {
         this.enemy.pastlocationax = Math.floor(this.enemy.animal.x / SQUARE_SIZE);
         this.enemy.pastlocationay = Math.floor(this.enemy.animal.y / SQUARE_SIZE);
       }
-      if(!(this.pastlocationx == Math.floor(this.player.x/SQUARE_SIZE) && this.pastlocationy == Math.floor(this.player.y/SQUARE_SIZE))){
+      if(true || !(this.pastlocationx == Math.floor(this.player.x/SQUARE_SIZE) && this.pastlocationy == Math.floor(this.player.y/SQUARE_SIZE))){
         var searchresult = this.enemy.search(mx, my, this.enemy.pastlocationax, this.enemy.pastlocationay);
         //mapdata_array[mx][my] = 1;
         this.position = this.enemy.position = searchresult;

@@ -47,8 +47,8 @@
 
 //障害物の判定について、checkoverlapとroute_listでの基準が大きく異なる（豚がcheckoverlapにかからないようにするとわかる）
 //振動など、時々止まってしまう状態がある
-
 //route_listの衝突判定をcheckoverlapに準拠させる
+//positionの中に割る前の座標を持たせたい。search内のcheckoverlapを、マス目ではなく座標ベースで判断したいため。
 
 import Phaser from "phaser";
 import globals from "./global.js";
@@ -335,7 +335,7 @@ class Animal {
     }
   }
 
-  search(x, y, pastlocationax, pastlocationay) {
+  search(x, y, pastlocationax, pastlocationay, layers) {
     console.log("search");
     var ax = Math.floor(this.animal.x / SQUARE_SIZE);
     var ay = Math.floor(this.animal.y / SQUARE_SIZE);
@@ -380,7 +380,8 @@ class Animal {
         }
 
         //障害物との比較
-        else if (mapdata_array[p.animal_y][p.animal_x] == 100) {
+        else if (checkOverlap(p.animal_x * SQUARE_SIZE,p.animal_ys * SQUARE_SIZE , layers) == true){
+          //できれば32倍する前の元の座標を使いたい
           //console.log("object");
           continue;
         }

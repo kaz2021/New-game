@@ -472,7 +472,7 @@ export class MyGame extends Phaser.Scene {
         this.enemy.pastlocationay = Math.floor(this.enemy.animal.y / SQUARE_SIZE);
       }
       if(true || !(this.pastlocationx == Math.floor(this.player.x/SQUARE_SIZE) && this.pastlocationy == Math.floor(this.player.y/SQUARE_SIZE))){
-        var searchresult = this.enemy.search(mx, my, this.enemy.pastlocationax, this.enemy.pastlocationay);
+        var searchresult = this.enemy.search(mx, my, this.enemy.pastlocationax, this.enemy.pastlocationay, this.objectlayer);
         //mapdata_array[mx][my] = 1;
         this.position = this.enemy.position = searchresult;
       }
